@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"iris-todos/repository"
 	util "iris-todos/utils"
 
@@ -79,6 +80,25 @@ func ChangeTodoStatus(ctx iris.Context) {
 	status := ctx.PostValueTrim("status")
 
 	updatedTodo := repository.ChangeTodoStatus(taskID, status)
+	ctx.StatusCode(iris.StatusOK)
+	util.Response(updatedTodo, ctx)
+}
+
+func RemoveAssignee(ctx iris.Context) {
+	claims := util.GetClaims(ctx)
+
+	taskID, _ := ctx.Params().GetUint("taskID")
+
+	if !repository.IsOwner(claims.ID, taskID) {
+		ctx.StatusCode(iris.StatusBadRequest)
+		util.Response("only task owner to manage this task.", ctx)
+		return
+	}
+
+	updatedTodo := repository.AddAssignee(taskID, uint(0))
+
+	fmt.Println("Push notification!")
+
 	ctx.StatusCode(iris.StatusOK)
 	util.Response(updatedTodo, ctx)
 }
