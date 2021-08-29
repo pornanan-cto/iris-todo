@@ -33,6 +33,7 @@ func main() {
 		protectedAPI.Post("/todos", controller.CreateTodo)
 		protectedAPI.Delete("/todos/{taskID:uint}", controller.RemoveTodo)
 		protectedAPI.Put("/todos/{taskID:uint}/assignee", controller.AddAssignee)
+		protectedAPI.Put("/todos/{taskID:uint}/status", controller.ChangeTodoStatus)
 	}
 
 	app.Listen(":" + config.APP_PORT)

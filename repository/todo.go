@@ -76,8 +76,21 @@ func IsOwner(userID uint, taskID uint) bool {
 	return todo.TaskOwnerID == userID
 }
 
+func IsRelevant(userID uint, taskID uint) bool {
+	todo := FindTaskByID(taskID)
+	return todo.TaskOwnerID == userID || todo.TaskAssigneeID == userID
+}
+
 func RemoveTodo(taskID uint) {
 	db := util.DatabaseConnect()
 	todo := FindTaskByID(taskID)
 	db.Delete(todo)
+}
+
+func ChangeTodoStatus(taskID uint, status string) model.Todo {
+	db := util.DatabaseConnect()
+	todo := FindTaskByID(taskID)
+	todo.Status = status
+	db.Save(todo)
+	return todo
 }

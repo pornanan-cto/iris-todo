@@ -64,3 +64,21 @@ func RemoveTodo(ctx iris.Context) {
 	ctx.StatusCode(iris.StatusOK)
 	util.Response(nil, ctx)
 }
+
+func ChangeTodoStatus(ctx iris.Context) {
+	claims := util.GetClaims(ctx)
+
+	taskID, _ := ctx.Params().GetUint("taskID")
+
+	if !repository.IsRelevant(claims.ID, taskID) {
+		ctx.StatusCode(iris.StatusBadRequest)
+		util.Response("only task owner, assignee is allowed to manage this task.", ctx)
+		return
+	}
+
+	status := ctx.PostValueTrim("status")
+
+	updatedTodo := repository.ChangeTodoStatus(taskID, status)
+	ctx.StatusCode(iris.StatusOK)
+	util.Response(updatedTodo, ctx)
+}
