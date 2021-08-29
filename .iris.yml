@@ -1,0 +1,46 @@
+Name: iris-todos
+Repo: ""
+Version: master
+Dest: /Users/pornanannanthapornpisut/Documents/personal/iris-todos
+Module: iris-todos
+DisableInlineCommands: false
+DisableNpmInstall: false
+NpmBuildScriptName: build
+Watcher:
+    Disable: false
+    Backend:
+        - .go
+        - .mod
+        - .yml
+        - .toml
+        - .tml
+        - .ini
+        - .proto
+    Frontend:
+        - .html
+        - .htm
+        - .svelte
+        - .md
+        - .js
+        - .ts
+        - .jsx
+        - .tsx
+        - .css
+        - .scss
+        - .less
+        - .json
+        - .proto
+    IgnoreDirs:
+        - .github
+        - .github/*
+        - uploads
+        - uploads/*
+LiveReload:
+    Disable: false
+    Port: 35729
+Files:
+    - .iris.yml
+    - go.mod
+    - go.sum
+BuildFiles: []
+MD5PackageJSON: []
