@@ -1,8 +1,16 @@
 package repository
 
 import (
+	"fmt"
 	model "iris-todos/models"
 	util "iris-todos/utils"
+)
+
+const (
+	IN_PROGRESS = "in_progress"
+	NOT_STARTED = "not_started"
+	COMPLETED   = "complted"
+	ALL         = "all"
 )
 
 func FindTaskByID(taskID uint) model.Todo {
@@ -19,6 +27,7 @@ func NewTodo(ownerID uint, taskName string, taskDescription string) (model.Todo,
 		TaskOwnerID:     ownerID,
 		TaskName:        taskName,
 		TaskDescription: taskDescription,
+		Status:          NOT_STARTED,
 	}
 
 	result := db.Create(&todo)
@@ -43,12 +52,23 @@ type UserTodos struct {
 	AssignedTasks []model.Todo `json:"assignedTasks"`
 }
 
-func GetRelatedTodos(userID uint) UserTodos {
+func GetRelatedTodos(userID uint, status string) UserTodos {
 	db := util.DatabaseConnect()
 	userTodos := UserTodos{}
 
-	db.Where("task_owner_id = ?", userID).Find(&userTodos.OwnedTasks)
-	db.Where("task_assignee_id = ?", userID).Find(&userTodos.AssignedTasks)
+	fmt.Print(status)
+
+	ownedTasks := db.Where("task_owner_id = ?", userID)
+	if status != ALL {
+		ownedTasks.Where("status = ?", status)
+	}
+	ownedTasks.Find(&userTodos.OwnedTasks)
+
+	assignedTasks := db.Where("task_assignee_id = ?", userID).Find(&userTodos.AssignedTasks)
+	if status != ALL {
+		assignedTasks.Where("status = ?", status)
+	}
+	assignedTasks.Find(&userTodos.AssignedTasks)
 
 	return userTodos
 }

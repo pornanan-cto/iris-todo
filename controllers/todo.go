@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"iris-todos/repository"
 	util "iris-todos/utils"
 
@@ -10,8 +9,9 @@ import (
 
 func GetTodos(ctx iris.Context) {
 	claims := util.GetClaims(ctx)
-	userTodos := repository.GetRelatedTodos(claims.ID)
-	fmt.Println(userTodos)
+	status := ctx.URLParamDefault("status", "all")
+	userTodos := repository.GetRelatedTodos(claims.ID, status)
+
 	ctx.StatusCode(iris.StatusOK)
 	util.Response(userTodos, ctx)
 }

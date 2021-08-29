@@ -8,6 +8,7 @@ type Todo struct {
 	TaskAssigneeID  uint      `gorm:"index" json:"taskAssignerId"`
 	TaskName        string    `json:"taskName"`
 	TaskDescription string    `json:"taskDescription"`
+	Status          string    `json:"status"`
 	CreatedAt       time.Time `json:"createdAt"`
 	UpdatedAt       time.Time `json:"updatedAt"`
 }
