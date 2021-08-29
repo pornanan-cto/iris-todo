@@ -39,8 +39,7 @@ func AddAssignee(ctx iris.Context) {
 	taskID, _ := ctx.Params().GetUint("taskID")
 	assigneeID, _ := ctx.PostValueInt("assigneeId")
 
-	todo := repository.FindTaskByID(taskID)
-	if todo.TaskOwnerID != claims.ID {
+	if !repository.IsOwner(claims.ID, taskID) {
 		ctx.StatusCode(iris.StatusBadRequest)
 		util.Response("only task owner to manage this task.", ctx)
 		return
@@ -49,4 +48,19 @@ func AddAssignee(ctx iris.Context) {
 	updatedTodo := repository.AddAssignee(taskID, uint(assigneeID))
 	ctx.StatusCode(iris.StatusOK)
 	util.Response(updatedTodo, ctx)
+}
+
+func RemoveTodo(ctx iris.Context) {
+	claims := util.GetClaims(ctx)
+	taskID, _ := ctx.Params().GetUint("taskID")
+
+	if !repository.IsOwner(claims.ID, taskID) {
+		ctx.StatusCode(iris.StatusBadRequest)
+		util.Response("only task owner to manage this task.", ctx)
+		return
+	}
+
+	repository.RemoveTodo(taskID)
+	ctx.StatusCode(iris.StatusOK)
+	util.Response(nil, ctx)
 }

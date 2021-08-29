@@ -31,6 +31,7 @@ func main() {
 
 		protectedAPI.Get("/todos", controller.GetTodos)
 		protectedAPI.Post("/todos", controller.CreateTodo)
+		protectedAPI.Delete("/todos/{taskID:uint}", controller.RemoveTodo)
 		protectedAPI.Put("/todos/{taskID:uint}/assignee", controller.AddAssignee)
 	}
 

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	model "iris-todos/models"
 	util "iris-todos/utils"
 )
@@ -56,8 +55,6 @@ func GetRelatedTodos(userID uint, status string) UserTodos {
 	db := util.DatabaseConnect()
 	userTodos := UserTodos{}
 
-	fmt.Print(status)
-
 	ownedTasks := db.Where("task_owner_id = ?", userID)
 	if status != ALL {
 		ownedTasks.Where("status = ?", status)
@@ -71,4 +68,16 @@ func GetRelatedTodos(userID uint, status string) UserTodos {
 	assignedTasks.Find(&userTodos.AssignedTasks)
 
 	return userTodos
+}
+
+func IsOwner(userID uint, taskID uint) bool {
+	todo := FindTaskByID(taskID)
+
+	return todo.TaskOwnerID == userID
+}
+
+func RemoveTodo(taskID uint) {
+	db := util.DatabaseConnect()
+	todo := FindTaskByID(taskID)
+	db.Delete(todo)
 }
