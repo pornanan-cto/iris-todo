@@ -37,3 +37,18 @@ func AddAssignee(taskID uint, assigneeID uint) model.Todo {
 	db.Save(todo)
 	return todo
 }
+
+type UserTodos struct {
+	OwnedTasks    []model.Todo `json:"ownedTasks"`
+	AssignedTasks []model.Todo `json:"assignedTasks"`
+}
+
+func GetRelatedTodos(userID uint) UserTodos {
+	db := util.DatabaseConnect()
+	userTodos := UserTodos{}
+
+	db.Where("task_owner_id = ?", userID).Find(&userTodos.OwnedTasks)
+	db.Where("task_assignee_id = ?", userID).Find(&userTodos.AssignedTasks)
+
+	return userTodos
+}

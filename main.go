@@ -29,6 +29,7 @@ func main() {
 		protectedAPI.Use(util.VerifyTokenHandler())
 		protectedAPI.Get("/me", controller.Me)
 
+		protectedAPI.Get("/todos", controller.GetTodos)
 		protectedAPI.Post("/todos", controller.CreateTodo)
 		protectedAPI.Put("/todos/{taskID:uint}/assignee", controller.AddAssignee)
 	}

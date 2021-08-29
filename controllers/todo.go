@@ -1,11 +1,20 @@
 package controller
 
 import (
+	"fmt"
 	"iris-todos/repository"
 	util "iris-todos/utils"
 
 	"github.com/kataras/iris/v12"
 )
+
+func GetTodos(ctx iris.Context) {
+	claims := util.GetClaims(ctx)
+	userTodos := repository.GetRelatedTodos(claims.ID)
+	fmt.Println(userTodos)
+	ctx.StatusCode(iris.StatusOK)
+	util.Response(userTodos, ctx)
+}
 
 func CreateTodo(ctx iris.Context) {
 	claims := util.GetClaims(ctx)
@@ -37,9 +46,7 @@ func AddAssignee(ctx iris.Context) {
 		return
 	}
 
-	todo.TaskAssigneeID = assigneeID
-}
-
-func GetTodos(ctx iris.Context) {
-	ctx.JSON(iris.Map{"message": "success"})
+	updatedTodo := repository.AddAssignee(taskID, uint(assigneeID))
+	ctx.StatusCode(iris.StatusOK)
+	util.Response(updatedTodo, ctx)
 }
